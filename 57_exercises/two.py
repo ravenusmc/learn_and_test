@@ -12,9 +12,15 @@ def greet():
 def choice(answer):
   if answer == "Y":
     print("Let us begin!")
-    return answer
+    enter_string()
   elif answer == "N":
     print('I understand, you may be busy!')
+    print('Program is now ending')
+
+def enter_string():
+  player_string = input('Please enter the word or sentence: ')
+  string_length = len(player_string)
+  print('The length of your word or sentence is ' )
 
 
 
