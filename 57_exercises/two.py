@@ -20,8 +20,7 @@ def choice(answer):
 def enter_string():
   player_string = input('Please enter the word or sentence: ')
   string_length = len(player_string)
-  print('The length of your word or sentence is ' )
-
+  print('The length of your phrase', player_string,  'is', string_length )
 
 
 answer = greet()
