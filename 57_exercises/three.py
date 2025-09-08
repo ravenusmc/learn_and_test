@@ -8,6 +8,9 @@ def program_start():
   else: 
     gamestart()
     noun = enter_noun()
+    adverb = enter_adverb()
+    verb = enter_verb()
+    adjective = enter_adjective()
     print(noun)
 
 def gamestart(): 
@@ -15,5 +18,14 @@ def gamestart():
 
 def enter_noun(): 
   return input('Please enter a noun: ')
+
+def enter_adverb(): 
+  return input('Please enter an adverb: ')
+
+def enter_verb():
+  return input('Please enter a verb: ')
+
+def enter_adjective(): 
+  return input("Please enter an adjective: ")
 
 choice = program_start()
