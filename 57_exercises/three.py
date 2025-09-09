@@ -11,7 +11,7 @@ def program_start():
     adverb = enter_adverb()
     verb = enter_verb()
     adjective = enter_adjective()
-    print(noun)
+    build_sentence(noun, adverb, verb, adjective)
 
 def gamestart(): 
   print('Here we go!')
@@ -27,5 +27,9 @@ def enter_verb():
 
 def enter_adjective(): 
   return input("Please enter an adjective: ")
+
+def build_sentence(noun, adverb, verb, adjective): 
+  print('The', noun, adverb, verb, 'to the', adjective, 'store')
+
 
 choice = program_start()
