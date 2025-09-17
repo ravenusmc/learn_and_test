@@ -4,9 +4,13 @@
 def program_start():
   answer = input('Would you like to use a simple program? (y/n) ').lower()
   if answer == 'n':
-    print('Thank you! Have a great day!')
+    print('Sad...You dont want to play! Well, have a great day!')
   else:
     first_number = get_first_number()
+    second_number = get_second_number() 
+    addition(first_number, second_number)
+    subtraction(first_number, second_number)
+    multiply(first_number, second_number)
 
 def get_first_number():
     while True:
@@ -28,7 +32,18 @@ def number_check(number):
     except ValueError:
         print("Please enter a valid number.")
         return None
-    
+
+def addition(first_number, second_number):
+  added = first_number + second_number
+  print(first_number, '+', second_number, '=', added)
+
+def subtraction(first_number, second_number):
+  subtracted = first_number - second_number
+  print(first_number, '-', second_number, '=', subtracted)
+
+def multiply(first_number, second_number):
+  multiplied = first_number * second_number
+  print(first_number, '*', second_number, '=', multiplied)
 
 
 program_start()
