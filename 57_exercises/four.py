@@ -11,6 +11,7 @@ def program_start():
     addition(first_number, second_number)
     subtraction(first_number, second_number)
     multiply(first_number, second_number)
+    divided(first_number, second_number)
 
 def get_first_number():
     while True:
@@ -44,6 +45,10 @@ def subtraction(first_number, second_number):
 def multiply(first_number, second_number):
   multiplied = first_number * second_number
   print(first_number, '*', second_number, '=', multiplied)
+
+def divided(first_number, second_number):
+  divided = first_number / second_number
+  print(first_number, '/', second_number, '=', divided)
 
 
 program_start()
