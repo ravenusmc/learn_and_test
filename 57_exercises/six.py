@@ -6,6 +6,9 @@ def program_start():
   if answer == 'n':
     print("Thank you for using!")
   else: 
-    pass
+    get_length_of_room()
+
+def get_length_of_room():
+  length_of_room = input("What is the length of your room: ")
 
 program_start()
