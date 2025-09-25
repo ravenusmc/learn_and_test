@@ -3,11 +3,13 @@
 def program_start():
   print('Welcome to room calculation program!')
   answer = input('Do you want to play? (y/n) ').lower() 
-  if answer == 'n':
+  if answer != 'y':
     print("Thank you for using!")
   else: 
     length_of_room = get_length_of_room()
     width_of_room = get_width_of_room()
+    tell_user_what_entered(length_of_room, width_of_room)
+    area = get_area(length_of_room, width_of_room)
 
 def get_length_of_room():
   while True: 
@@ -29,5 +31,12 @@ def number_check(number):
     except ValueError:
         print("Please enter a valid number.")
         return None
+
+def tell_user_what_entered(length_of_room, width_of_room):
+  print('You entered dimensions of', length_of_room, 'feet by', width_of_room, 'feet.')
+
+def get_area(length_of_room, width_of_room): 
+   return length_of_room * width_of_room
+  
     
 program_start()
