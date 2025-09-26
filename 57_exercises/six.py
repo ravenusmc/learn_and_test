@@ -37,6 +37,9 @@ def tell_user_what_entered(length_of_room, width_of_room):
 
 def get_area(length_of_room, width_of_room): 
    return length_of_room * width_of_room
+
+def show_user_area_result(area):
+   pass
   
     
 program_start()
