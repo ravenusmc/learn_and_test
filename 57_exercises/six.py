@@ -10,6 +10,7 @@ def program_start():
     width_of_room = get_width_of_room()
     tell_user_what_entered(length_of_room, width_of_room)
     area = get_area(length_of_room, width_of_room)
+    show_user_area_result(area)
 
 def get_length_of_room():
   while True: 
@@ -39,7 +40,7 @@ def get_area(length_of_room, width_of_room):
    return length_of_room * width_of_room
 
 def show_user_area_result(area):
-   pass
+  print('The total area is:', area, 'feet.')
   
     
 program_start()
