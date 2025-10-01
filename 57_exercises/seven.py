@@ -5,7 +5,13 @@
 # How many pizzas do you have 
 
 def program_start():
-  pass
+  response = input("Do you want to use the program (y/n) ").lower()
+  if response != "y":
+    print('Ok, no problem, come back again!')
+  else: 
+    pass 
 
+def number_of_people():
+  
 
 program_start()
