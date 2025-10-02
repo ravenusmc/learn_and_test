@@ -12,6 +12,13 @@ def program_start():
     pass 
 
 def number_of_people():
-  
+  pass
+
+def number_check(number):
+    try:
+        return int(number)
+    except ValueError:
+        print("Please enter a valid number.")
+        return None
 
 program_start()
