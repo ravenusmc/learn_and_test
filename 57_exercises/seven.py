@@ -12,7 +12,7 @@ def program_start():
     pass 
 
 def number_of_people():
-  pass
+  number_people = input('How many people will be attending the party: ')
 
 def number_check(number):
     try:
