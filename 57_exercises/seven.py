@@ -9,16 +9,25 @@ def program_start():
   if response != "y":
     print('Ok, no problem, come back again!')
   else: 
-    pass 
+    program_intro()
+    people = number_of_people() 
+
+def program_intro():
+   print("The program will now start!")
 
 def number_of_people():
-  number_people = input('How many people will be attending the party: ')
-
+  while True:
+    number_of_people = input('How many people will be attending the party: ')
+    result = number_check(number_of_people)
+    if result is not None: 
+       return result
+    
 def number_check(number):
     try:
-        return int(number)
+      return int(number)
     except ValueError:
-        print("Please enter a valid number.")
-        return None
+      print("Please enter a valid number.")
+      return None
+
 
 program_start()
