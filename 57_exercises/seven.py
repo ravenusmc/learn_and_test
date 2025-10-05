@@ -21,6 +21,13 @@ def number_of_people():
     result = number_check(number_of_people)
     if result is not None: 
        return result
+
+def number_of_pizzas():
+  while True: 
+    number_of_pizzas = input("How many pizzas will be ")
+    result = number_check(number_of_pizzas)
+    if result is not None:
+      return result 
     
 def number_check(number):
     try:
