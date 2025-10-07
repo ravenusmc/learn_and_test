@@ -11,6 +11,8 @@ def program_start():
   else: 
     program_intro()
     people = number_of_people() 
+    number_pizzas = number_of_pizzas()
+    slices = number_of_slices_per_pizza()
 
 def program_intro():
    print("The program will now start!")
