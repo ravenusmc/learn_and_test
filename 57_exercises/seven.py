@@ -13,6 +13,7 @@ def program_start():
     people = number_of_people() 
     number_pizzas = number_of_pizzas()
     slices = number_of_slices_per_pizza()
+    total_slices = get_total_slices(number_pizzas, slices)
 
 def program_intro():
    print("The program will now start!")
@@ -37,6 +38,9 @@ def number_of_slices_per_pizza():
     result = number_check(number_of_slices)
     if result is not None: 
       return result 
+
+def get_total_slices(number_pizzas, slices):
+  return number_pizzas * slices
     
 def number_check(number):
     try:
