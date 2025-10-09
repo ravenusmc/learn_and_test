@@ -41,6 +41,9 @@ def number_of_slices_per_pizza():
 
 def get_total_slices(number_pizzas, slices):
   return number_pizzas * slices
+
+def slices_per_person(people, total_slices):
+  pass 
     
 def number_check(number):
     try:
