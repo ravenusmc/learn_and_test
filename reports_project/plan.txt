@@ -1,0 +1,28 @@
+That’s *very* possible — and honestly, quite a practical and clean little automation project.
+
+Here’s a quick rundown of how you could structure it:
+
+1. **Read the Excel file** — using `pandas.read_excel()` with `sheet_name=None` to load all three worksheets into a dictionary of DataFrames.
+
+2. **Export each worksheet to CSV** — loop through that dictionary and use `df.to_csv()` for each sheet.
+
+3. **Filter each CSV by office location** — read each back in (or use the DataFrames directly) and apply filters, e.g.
+
+   ```python
+   df_clp = df[df["Office"] == "CLP"]
+   df_appoints = df[df["Office"] == "APPOINTS"]
+   df_wgi = df[df["Office"] == "WGI"]
+   ```
+
+4. **Write those filtered DataFrames back into a new Excel file** — use `pandas.ExcelWriter()` to create one file with each office’s data as a worksheet.
+
+   ```python
+   with pd.ExcelWriter("Filtered_Report.xlsx") as writer:
+       df_clp.to_excel(writer, sheet_name="CLP", index=False)
+       df_appoints.to_excel(writer, sheet_name="Appoints", index=False)
+       df_wgi.to_excel(writer, sheet_name="WGI", index=False)
+   ```
+
+So yes — **totally doable in 40–60 lines of Python** using only the `pandas` library.
+
+If you’d like, I can sketch a skeleton version (no full logic, just the structure) so you can see how the flow would look — want me to do that?
