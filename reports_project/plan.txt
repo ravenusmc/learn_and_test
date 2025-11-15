@@ -1,10 +1,22 @@
+Plan for project: 
+I will have two main phases. 
+
+1. To filter the spreadsheet by office and then to sort by a specific date. This will build
+a spreadsheet for each office. 
+
+2. The second major part will be to add the notes from the prio months reports into the 
+reports. 
+
+
 That’s *very* possible — and honestly, quite a practical and clean little automation project.
 
 Here’s a quick rundown of how you could structure it:
 
 1. **Read the Excel file** — using `pandas.read_excel()` with `sheet_name=None` to load all three worksheets into a dictionary of DataFrames.
+-DONE THIS PART 
 
 2. **Export each worksheet to CSV** — loop through that dictionary and use `df.to_csv()` for each sheet.
+-DONE 
 
 3. **Filter each CSV by office location** — read each back in (or use the DataFrames directly) and apply filters, e.g.
 
