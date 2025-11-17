@@ -60,6 +60,9 @@ class Reports():
   def filter_EXC_by_office(self):
     pass
 
+  def filter_WIGI_by_office(self):
+    pass
+
 report_object = Reports()
 report_object.program_starting()
 report_object.select_office()
