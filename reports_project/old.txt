@@ -1,0 +1,25 @@
+def filter_clps_by_office(self):
+clp_path = os.path.join(self.csv_folder, "CLP.csv")
+df = pd.read_csv(clp_path, dtype=str)
+org_field = "ORG CODE"
+sort_field = "ENTER PRES GR"
+df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
+# Sort by Enter Pres GR
+df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
+office = self.selected_office
+csv_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
+df_filtered.to_csv(csv_path, index=False)
+
+#for office, org_code_list in self.office_codes.items():
+    # Filter DF by office org codes
+    # df_filtered = df[df[org_field].isin(org_code_list)]
+    # if df_filtered.empty:
+    # skip if no rows match this office
+    # continue
+    # Sort by Enter Pres GR
+    # df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
+    # csv_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
+    # df_filtered.to_csv(csv_path, index=False)
+    # To build excel files:
+    # excel_path = os.path.join(self.csv_folder, f"{office}_CLP.xlsx")
+    # df_filtered.to_excel(excel_path, index=False)

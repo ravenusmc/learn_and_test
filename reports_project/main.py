@@ -36,29 +36,32 @@ class Reports():
         # Build the full file path inside the folder
         csv_path = os.path.join(self.csv_folder, f"{sheet_name}.csv")
         df.to_csv(csv_path, index=False)
-        print(f"Saved {csv_path}")
+        # print(f"Saved {csv_path}")
   
   def filter_clps_by_office(self):
     clp_path = os.path.join(self.csv_folder, "CLP.csv")
     df = pd.read_csv(clp_path, dtype=str)
     org_field = "ORG CODE"
     sort_field = "ENTER PRES GR"
-    for office, org_code_list in self.office_codes.items():
-      # Filter DF by office org codes
-      df_filtered = df[df[org_field].isin(org_code_list)]
-      if df_filtered.empty:
-        # skip if no rows match this office
-        continue
-      # Sort by Enter Pres GR
-      df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
-      csv_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
-      df_filtered.to_csv(csv_path, index=False)
-      # To build excel files:
-      # excel_path = os.path.join(self.csv_folder, f"{office}_CLP.xlsx")
-      # df_filtered.to_excel(excel_path, index=False)
+    df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
+    # Sort by Enter Pres GR
+    df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
+    office = self.selected_office
+    csv_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
+    df_filtered.to_csv(csv_path, index=False)
   
   def filter_EXC_by_office(self):
-    pass
+    exc_path = os.path.join(self.csv_folder, "EXC.csv")
+    df = pd.read_csv(exc_path, dtype=str)
+    org_field = "ORG_CODE"
+    sort_field = "APPNT EFF DATE"
+    df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
+    # Sorting by the appointment field 
+    df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
+    office = self.selected_office
+    csv_path = os.path.join(self.csv_folder, f"{office}_EXC.csv")
+    print(csv_path)
+    df_filtered.to_csv(csv_path, index=False)
 
   def filter_WIGI_by_office(self):
     pass
@@ -67,6 +70,6 @@ report_object = Reports()
 report_object.program_starting()
 report_object.select_office()
 report_object.export_all_sheets_to_csv()
-# report_object.filter_clps_by_office()
-
+report_object.filter_clps_by_office()
+report_object.filter_EXC_by_office()
 
