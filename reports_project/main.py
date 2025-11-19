@@ -56,15 +56,57 @@ class Reports():
     org_field = "ORG_CODE"
     sort_field = "APPNT EFF DATE"
     df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
-    # Sorting by the appointment field 
     df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
     office = self.selected_office
     csv_path = os.path.join(self.csv_folder, f"{office}_EXC.csv")
-    print(csv_path)
     df_filtered.to_csv(csv_path, index=False)
 
   def filter_WIGI_by_office(self):
-    pass
+    #NEED TO ADD CODE to STRIP OUT THE CI
+    wigi_path = os.path.join(self.csv_folder, "WIGI.csv")
+    df = pd.read_csv(wigi_path, dtype=str)
+    org_field = "Organization Cd"
+    sort_field = "WGI DATE"
+    df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
+    df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
+    office = self.selected_office
+    csv_path = os.path.join(self.csv_folder, f"{office}_WIGI.csv")
+    df_filtered.to_csv(csv_path, index=False)
+  
+  def get_old_month_report(self):
+    office = self.selected_office
+    excel_path = f'./Old_Month_Report/{office}_Old_report.xlsx'
+    old_monthly_report = pd.read_excel(
+        f'./Old_Month_Report/{office}_Old_report.xlsx',
+        sheet_name=None,
+        engine='openpyxl'
+    )
+    # Loop through each sheet and export
+    for sheet_name, df in old_monthly_report.items():
+        csv_filename = f"{office}_old_{sheet_name}.csv"
+        csv_path = os.path.join(self.csv_folder, csv_filename)
+        df.to_csv(csv_path, index=False)
+    # Load both CSVs
+    old_clp_path = os.path.join(self.csv_folder, f"{office}_old_CLP.csv")
+    new_clp_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
+    df_old = pd.read_csv(old_clp_path, dtype=str)
+    df_new = pd.read_csv(new_clp_path, dtype=str)
+    # Keep only the columns we need from the old file
+    df_old_reduced = df_old[["EMPLOYEE NAME", "Notes"]]
+    # Merge on the name column(s)
+    # Merge NOTES into the new CLP file
+    df_merged = df_new.merge(
+        df_old_reduced,
+        on="EMPLOYEE NAME",
+        how="left"
+    )
+    cols = ["Notes"] + [c for c in df_merged.columns if c != "Notes"]
+    df_merged = df_merged[cols]
+    # Save result
+    csv_path = os.path.join(self.csv_folder, f"{office}_MERGED.csv")
+    df_merged.to_csv(csv_path, index=False)
+
+
 
 report_object = Reports()
 report_object.program_starting()
@@ -72,4 +114,6 @@ report_object.select_office()
 report_object.export_all_sheets_to_csv()
 report_object.filter_clps_by_office()
 report_object.filter_EXC_by_office()
+report_object.filter_WIGI_by_office()
+report_object.get_old_month_report()
 
