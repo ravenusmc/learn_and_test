@@ -25,14 +25,12 @@ class Reports():
     with open(config_path, "r") as f:
         self.office_codes = json.load(f)
     self.selected_office = ""
-    self.selected_month = ""
 
   def program_starting(self):
     print('Program Now Starting...')
   
-  def select_office_and_month(self): 
+  def select_office(self): 
     self.selected_office = input('Please enter what office you want report built for: ')
-    self.selected_month = input("Please enter what month the report is for: ")
   
   def export_all_sheets_to_csv(self):
     for sheet_name, df in self.monthly_report.items():
@@ -66,6 +64,7 @@ class Reports():
 
   def filter_WIGI_by_office(self):
     office = self.selected_office
+    #NEED TO ADD CODE to STRIP OUT THE CI
     wigi_path = os.path.join(self.csv_folder, "WIGI.csv")
     df = pd.read_csv(wigi_path, dtype=str)
     org_field = "Organization Cd"
@@ -146,8 +145,7 @@ class Reports():
     df_exc = pd.read_csv(exc_path, dtype=str)
     df_wigi = pd.read_csv(wigi_path, dtype=str)
     # Output Excel path
-    month = self.selected_month
-    output_excel = os.path.join(self.csv_folder, f"{office}_{month}_Monthly_report.xlsx")
+    output_excel = os.path.join(self.csv_folder, "FINAL_REPORT.xlsx")
     # Write all three sheets into one Excel file
     with pd.ExcelWriter(output_excel, engine="openpyxl") as writer:
         df_clp.to_excel(writer, sheet_name="CLP", index=False)
@@ -167,7 +165,7 @@ class Reports():
   
 report_object = Reports()
 report_object.program_starting()
-report_object.select_office_and_month()
+report_object.select_office()
 report_object.export_all_sheets_to_csv()
 report_object.filter_clps_by_office()
 report_object.filter_EXC_by_office()
