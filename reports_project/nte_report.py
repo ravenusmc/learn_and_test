@@ -6,3 +6,5 @@ import pandas as pd
 import os
 import json
 import glob
+
+class NTE_Reports():
