@@ -8,3 +8,5 @@ import json
 import glob
 
 class NTE_Reports():
+
+    def __init__(self):
