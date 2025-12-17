@@ -1,3 +1,5 @@
+# This is the first file learning the basics of tkinter. 
+
 from tkinter import *
 
 root = Tk()
