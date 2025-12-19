@@ -1,4 +1,5 @@
-# This is the first file learning the basics of tkinter. It will be a basic food price app. 
+# This is the first file learning the basics of tkinter. It will be a basic food price app.
+# Other than that not that impressive! 
 
 from tkinter import *
 
