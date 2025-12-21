@@ -11,7 +11,17 @@ color = 'gray77'
 root.configure(bg=color)
 
 v = IntVar()
+res = IntVar()
 # v = StringVar()
+
+def cal_price():
+    value = int(v.get())
+    if value == 0: 
+        res.set(int(entry_2.get()) * 4)
+    elif value == 1:
+        res.set(int(entry_2.get()) * 6) 
+    elif value == 2: 
+        res.set(int(entry_2.get()) * 10) 
 
 label = Label(root, text='Choose An Item', bg=color)
 label.place(x=100, y=5)
@@ -25,21 +35,18 @@ r_btn2.place(x=5, y=60)
 r_btn3 = Radiobutton(root, text='Orange', bg=color, variable=v, value=2)
 r_btn3.place(x=5, y=90)
 
-entry = Entry(root, width=20)
+entry = Entry(root, width=20, textvariable=res)
 entry.place(x=80, y=130)
 
 label_res = Label(root, text='Price', bg=color)
 label_res.place(x=5, y=130)
 
-entry = Entry(root, width=20)
-entry.place(x=80, y=130)
-
 entry_2 = Entry(root, width=20)
 entry_2.place(x=80, y=160)
 
 # highlight background 
-btn = Button(root, text='Cal', highlightbackground=color)
-btn.place(x=5, y=160)
+btn_cal = Button(root, text="Cal", command=lambda:cal_price(), highlightbackground=color)
+btn_cal.place(x=5, y=150)
 
 
 root.mainloop()
