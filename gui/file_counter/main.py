@@ -2,6 +2,7 @@ from tkinter import *
 
 root = Tk()
 
+#setting program up
 root.geometry('500x500')
 root.title('File Counter')
 color = 'gray'
