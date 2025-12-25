@@ -10,6 +10,14 @@ def clear_text():
 def open_file(): 
     root.filename = filedialog.askopenfilename()
 
+def count_text(file): 
+    file_open = open(str(file), 'r')
+    full_text = file_open.readlines()
+    file_open.close()
+    for word in word_list.get().split(', '):
+        print(word)
+
+
 #setting program up
 root.geometry('500x500')
 root.title('File Counter')
@@ -22,8 +30,10 @@ word_list.place(x=0, y=0)
 #Buttons 
 file = Button(root, text='Select File', width=50, highlightbackground=color, command=lambda : open_file())
 file.place(x=0, y=30)
-count = Button(root, text='Count Words', width=50, highlightbackground=color).place(x=0, y=60)
-clear = Button(root, text='Clear Text', width=50, highlightbackground=color, command=lambda : clear_text()).place(x=0, y=90)
+count = Button(root, text='Count Words', width=50, highlightbackground=color, command=lambda : count_text(root.filename))
+count.place(x=0, y=60)
+clear = Button(root, text='Clear Text', width=50, highlightbackground=color, command=lambda : clear_text())
+clear.place(x=0, y=90)
 
 #text field 
 answer = Text(root, height=30, width=70, bg='gray77')
