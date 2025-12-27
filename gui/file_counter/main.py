@@ -22,7 +22,10 @@ def count_text(file):
                 count_result[word] = count_result[word] + text.count(word)
             else: 
                count_result[word] = text.count(word)
-    print(count_result)
+    answer.delete('1.0', END)
+    for k,v in count_result.items():
+        answer.insert('1.0', '{0} {1} \n'.format(k,v))
+    count_result.clear()
 
 
 #setting program up
