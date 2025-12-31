@@ -1,3 +1,4 @@
+# this file is just to show how classes work. 
 from tkinter import * 
 
 class MyFirstUI:
