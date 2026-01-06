@@ -1,4 +1,4 @@
-# This will be a simple calculator app. 
+# This will be a simple calculator app with tkinter
 from tkinter import *
 
 # ---------- Settings 
