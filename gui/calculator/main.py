@@ -38,7 +38,7 @@ btn_mul.pack(side=LEFT, padx=3, pady=3)
 btn_div = Button(top_third, text='/', width=6, highlightbackground=color)
 btn_div.pack(side=LEFT, padx=3, pady=3)
 
-# ---------- Entry + Labels ---------
+# ---------- Entry + Labels ---
 
 label_first_num = Label(top_first, text="Input Number 1:", bg=color)
 label_first_num.pack(side=LEFT, padx=5, pady=5)
