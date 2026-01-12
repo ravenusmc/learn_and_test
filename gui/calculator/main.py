@@ -1,5 +1,6 @@
 # This will be a simple calculator app with tkinter
 from tkinter import *
+import tkinter.messagebox
 
 # ---------- Settings ---------
 
@@ -12,9 +13,9 @@ root.resizable(width=False, height=False)
 
 # ---------- Varaibles ---------
 
-num1 = IntVar()
-num2 = IntVar()
-res_value = IntVar()
+num1 = StringVar()
+num2 = StringVar()
+res_value = StringVar()
 
 # ---------- Frames ---------
 
@@ -39,18 +40,49 @@ def plus():
     except: 
         errorMsg('Error')
 
+def minus():
+    try:
+        value = float(num1.get()) - float(num2.get())
+        res_value.set(value)
+    except: 
+        errorMsg('Error')
+
+def multiply():
+    try:
+        value = float(num1.get()) * float(num2.get())
+        res_value.set(value)
+    except: 
+        errorMsg('Error')
+
+def divide():
+    if num2.get() == "0":
+        errorMsg('divisionerror')
+    elif num2.get() != "0":
+        try:
+            value = float(num1.get()) / float(num2.get())
+            res_value.set(value)
+        except: 
+            errorMsg('Error')
+
+def errorMsg(ms):
+    if ms == 'error':
+        tkinter.messagebox.showerror('Error!', 'Something went really wrong!')
+    elif ms == 'divisionerror':
+        tkinter.messagebox.showerror('Division Error!', 'Cannot Divide by zero')
+
+
 # ---------- Button ---------
 
 btn_plus = Button(top_third, text='+', width=6, highlightbackground=color, command=lambda : plus())
 btn_plus.pack(side=LEFT, padx=3, pady=3)
 
-btn_minus = Button(top_third, text='-', width=6, highlightbackground=color)
+btn_minus = Button(top_third, text='-', width=6, highlightbackground=color, command=lambda : minus())
 btn_minus.pack(side=LEFT, padx=3, pady=3)
 
-btn_mul = Button(top_third, text='*', width=6, highlightbackground=color)
+btn_mul = Button(top_third, text='*', width=6, highlightbackground=color, command=lambda : multiply())
 btn_mul.pack(side=LEFT, padx=3, pady=3)
 
-btn_div = Button(top_third, text='/', width=6, highlightbackground=color)
+btn_div = Button(top_third, text='/', width=6, highlightbackground=color, command=lambda : divide())
 btn_div.pack(side=LEFT, padx=3, pady=3)
 
 
@@ -74,6 +106,6 @@ res.pack(side=LEFT, padx=5, pady=5)
 res_num = Entry(top_fourth, highlightbackground=color, textvariable=res_value)
 res_num.pack(side=LEFT)
 
-
-
 root.mainloop()
+
+
