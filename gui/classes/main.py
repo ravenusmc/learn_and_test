@@ -16,7 +16,7 @@ class MyFirstUI:
     self.btn2 = Button(master, text='Quit', command=self.quit)
     self.btn2.pack()
 
-  def btn_action(self):
+  def get_new_monthly_report(self):
     print('This button is clicked')
 
   def quit(self):
