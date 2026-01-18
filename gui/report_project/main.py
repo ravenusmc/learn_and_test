@@ -17,13 +17,18 @@ class ReportGui:
     self.EXC_DF = ""
     self.WIGI_DF = ""
     self.master.title('Report Makr')
-    self.master.geometry('400x400')
+    self.master.geometry('400x300')
     self.master.color = 'gray55'
+    self.office = ""
     self.master.configure(bg=self.master.color)
     self.btn = Button(master, text='Select New Report', command=self.get_new_monthly_report)
     self.btn.pack()
-    self.label = Label(master, text='This is label')
+    self.btn = Button(master, text='Select Old Monthly Report', command=self.get_new_monthly_report)
+    self.btn.pack()
+    self.label = Label(master, text='Office:')
     self.label.pack()
+    self.office = Entry(master, highlightbackground=self.master.color, textvariable=self.office)
+    self.office.pack()
   
   def get_new_monthly_report(self):
     file_path = filedialog.askopenfilename(
@@ -40,6 +45,7 @@ class ReportGui:
     self.CLP_DF = self.monthly_report["CLP"]
     self.EXC_DF = self.monthly_report["EXC"]
     self.WIGI_DF = self.monthly_report["WIGI"]
+    print(self.CLP_DF.head())
   
   def break_up_new_monthly_report(self):
     pass
