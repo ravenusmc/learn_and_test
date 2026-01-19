@@ -3,10 +3,13 @@
 # importing supporting libraries for project
 from tkinter import * 
 from tkinter import filedialog
+from io import StringIO
 import pandas as pd
 import os
 import json
 import glob
+from tkinter import messagebox
+
 
 class ReportGui:
   
@@ -16,21 +19,55 @@ class ReportGui:
     self.CLP_DF = ""
     self.EXC_DF = ""
     self.WIGI_DF = ""
+    self.CLP_OLD = ""
+    self.EXC_OLD = ""
+    self.WIGI_OLD = ""
     self.master.title('Report Makr')
     self.master.geometry('400x300')
     self.master.color = 'gray55'
     self.office = ""
+    self.office_var = StringVar()
+    self.month = ""
+    self.month_var = StringVar()
     self.master.configure(bg=self.master.color)
+    # Entry Office code: 
+    row = Frame(master, bg=self.master.color)
+    row.pack(pady=10)
+    Label(row, text="Office:", bg=self.master.color).pack(side=LEFT, padx=(0, 5))
+    self.office_entry = Entry(
+      row,
+      highlightbackground=self.master.color,
+      textvariable=self.office_var
+    )
+    self.office_entry.pack(side=LEFT)
+    # Entry Month Code: 
+    row_2 = Frame(master, bg=self.master.color)
+    row_2.pack(pady=10)
+    Label(row_2, text="Month:", bg=self.master.color).pack(side=LEFT, padx=(0, 5))
+    self.month_entry = Entry(
+      row_2,
+      highlightbackground=self.master.color,
+      textvariable=self.month_var
+    )
+    self.month_entry.pack(side=LEFT)
+
+    # self.office_entry.pack()
     self.btn = Button(master, text='Select New Report', command=self.get_new_monthly_report)
     self.btn.pack()
     self.btn = Button(master, text='Select Old Monthly Report', command=self.get_new_monthly_report)
     self.btn.pack()
-    self.label = Label(master, text='Office:')
-    self.label.pack()
-    self.office = Entry(master, highlightbackground=self.master.color, textvariable=self.office)
-    self.office.pack()
+
   
   def get_new_monthly_report(self):
+    self.office = self.office_var.get().strip()
+    self.month = self.month_var.get().strip()
+    if not self.office:
+      messagebox.showerror("Missing Office", "Please enter an office name.")
+      return
+    if not self.month:
+      messagebox.showerror("Missing Month", "Please enter a month")
+      return
+    print("Office entered:", self.month) 
     file_path = filedialog.askopenfilename(
         title="Select Monthly Report",
         filetypes=[("Excel files", "*.xlsx *.xls")]
@@ -45,7 +82,36 @@ class ReportGui:
     self.CLP_DF = self.monthly_report["CLP"]
     self.EXC_DF = self.monthly_report["EXC"]
     self.WIGI_DF = self.monthly_report["WIGI"]
-    print(self.CLP_DF.head())
+    self.export_all_sheets_to_csv()
+  
+  def export_all_sheets_to_csv(self):
+    self.csv_buffers = {}   # optional: keeps all sheets generically
+    for sheet_name, df in self.monthly_report.items():
+        buffer = StringIO()
+        df.to_csv(buffer, index=False)
+        buffer.seek(0)
+        # store generically
+        self.csv_buffers[sheet_name] = buffer.getvalue()
+        # store explicitly if you want named attributes
+        if sheet_name == "CLP":
+            self.CLP_OLD = buffer.getvalue()
+        elif sheet_name == "EXC":
+            self.EXC_OLD = buffer.getvalue()
+        elif sheet_name == "WIGI":
+            self.WIGI_OLD = buffer.getvalue()
+  
+  def filter_clps_by_office(self):
+    clp_path = os.path.join(self.csv_folder, "CLP.csv")
+    df = pd.read_csv(clp_path, dtype=str)
+    df.columns = df.columns.str.strip().str.upper()
+    org_field = "ORG CODE"
+    sort_field = "ENTER PRES GR"
+    df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
+    df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
+    office = self.selected_office
+    csv_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
+    df_filtered.to_csv(csv_path, index=False)
+
   
   def break_up_new_monthly_report(self):
     pass
