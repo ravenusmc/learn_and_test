@@ -14,7 +14,13 @@ from tkinter import messagebox
 class ReportGui:
   
   def __init__(self, master):
+    # GUI Parameters 
     self.master = master
+    self.master.title('Report Makr')
+    self.master.geometry('400x300')
+    self.master.color = 'gray55'
+    self.master.configure(bg=self.master.color)
+    #Reports Parameters 
     self.monthly_report = ""
     self.CLP_DF = ""
     self.EXC_DF = ""
@@ -22,14 +28,16 @@ class ReportGui:
     self.CLP_OLD = ""
     self.EXC_OLD = ""
     self.WIGI_OLD = ""
-    self.master.title('Report Makr')
-    self.master.geometry('400x300')
-    self.master.color = 'gray55'
     self.office = ""
+    self.offices = ['ABC', 'DEF', 'GHI']
     self.office_var = StringVar()
+    self.office_var.set(self.offices[0])
     self.month = ""
+    self.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     self.month_var = StringVar()
-    self.master.configure(bg=self.master.color)
+    self.month_var.set(self.months[0])
+
+    self.month_var = StringVar()
     # Entry Office code: 
     row = Frame(master, bg=self.master.color)
     row.pack(pady=10)
@@ -40,16 +48,18 @@ class ReportGui:
       textvariable=self.office_var
     )
     self.office_entry.pack(side=LEFT)
+
     # Entry Month Code: 
     row_2 = Frame(master, bg=self.master.color)
     row_2.pack(pady=10)
     Label(row_2, text="Month:", bg=self.master.color).pack(side=LEFT, padx=(0, 5))
-    self.month_entry = Entry(
-      row_2,
-      highlightbackground=self.master.color,
-      textvariable=self.month_var
+    self.month_menu = OptionMenu(
+        row_2,
+        self.month_var,
+        *self.months
     )
-    self.month_entry.pack(side=LEFT)
+    self.month_menu.config(bg=self.master.color)
+    self.month_menu.pack(side=LEFT)
 
     # self.office_entry.pack()
     self.btn = Button(master, text='Select New Report', command=self.get_new_monthly_report)
