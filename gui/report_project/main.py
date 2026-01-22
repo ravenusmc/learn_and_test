@@ -102,20 +102,16 @@ class ReportGui:
     self.export_all_sheets_to_csv()
   
   def export_all_sheets_to_csv(self):
-    self.csv_buffers = {}   # optional: keeps all sheets generically
-    for sheet_name, df in self.monthly_report.items():
-        buffer = StringIO()
-        df.to_csv(buffer, index=False)
-        buffer.seek(0)
-        # store generically
-        self.csv_buffers[sheet_name] = buffer.getvalue()
-        # store explicitly if you want named attributes
-        if sheet_name == "CLP":
-            self.CLP_OLD = buffer.getvalue()
-        elif sheet_name == "EXC":
-            self.EXC_OLD = buffer.getvalue()
-        elif sheet_name == "WIGI":
-            self.WIGI_OLD = buffer.getvalue()
+      self.csv_buffers = {}
+      for sheet_name, df in self.monthly_report.items():
+          csv_text = self.df_to_csv_string(df)
+          self.csv_buffers[sheet_name] = csv_text
+          if sheet_name == "CLP":
+              self.CLP_OLD = csv_text
+          elif sheet_name == "EXC":
+              self.EXC_OLD = csv_text
+          elif sheet_name == "WIGI":
+              self.WIGI_OLD = csv_text
   
   def build_new_report(self):
     self.filter_clps_by_office()
@@ -125,30 +121,35 @@ class ReportGui:
     df.columns = df.columns.str.strip().str.upper()
     org_field = "ORG CODE"
     sort_field = "ENTER PRES GR"
-    df_filtered = df[df[org_field].isin(self.office_codes[self.office])]
+    df_filtered = df[df[org_field].isin(self.office_code_map[self.office])]
     df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
-    # office = self.office
-    buffer = StringIO()
-    df_filtered.to_csv(buffer, index=False)
-    buffer.seek(0)
-    self.CLP_Filtered_Old = buffer.getvalue()
-    print(self.CLP_Filtered_Old.splitlines()[:5])
-
-    # OLD CODE 
-    # clp_path = os.path.join(self.csv_folder, "CLP.csv")
-    # df = pd.read_csv(clp_path, dtype=str)
-    # df.columns = df.columns.str.strip().str.upper()
-    # org_field = "ORG CODE"
-    # sort_field = "ENTER PRES GR"
-    # df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
-    # df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
-    # office = self.selected_office
-    # csv_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
-    # df_filtered.to_csv(csv_path, index=False)
+    self.CLP_Filtered_Old = self.df_to_csv_string(df_filtered)
+    # print(self.CLP_Filtered_Old.splitlines()[:5])
 
   
   def break_up_new_monthly_report(self):
     pass
+
+  # The methods below here are support methods...maybe one day move to another class...
+  # This method is for the JSON file. 
+  def load_office_codes(self):
+    print(os.getcwd())
+    config_path = os.path.join(os.getcwd(), "./office_codes/offices_and_codes.json")
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        messagebox.showerror(
+            "Missing Configuration",
+            "office_codes.json not found.\nThe application cannot continue."
+        )
+        self.master.destroy()
+        return {}
+  
+  def df_to_csv_string(self, df):
+    buffer = StringIO()
+    df.to_csv(buffer, index=False)
+    return buffer.getvalue()
 
 
 
