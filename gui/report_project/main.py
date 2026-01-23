@@ -125,6 +125,19 @@ class ReportGui:
     df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
     self.CLP_Filtered_Old = self.df_to_csv_string(df_filtered)
     # print(self.CLP_Filtered_Old.splitlines()[:5])
+  
+  def filter_EXC_by_office(self):
+
+    #Below this line - old code
+    exc_path = os.path.join(self.csv_folder, "EXC.csv")
+    df = pd.read_csv(exc_path, dtype=str)
+    org_field = "ORG_CODE"
+    sort_field = "APPNT EFF DATE"
+    df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
+    df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
+    office = self.selected_office
+    csv_path = os.path.join(self.csv_folder, f"{office}_EXC.csv")
+    df_filtered.to_csv(csv_path, index=False)
 
   
   def break_up_new_monthly_report(self):
