@@ -33,6 +33,7 @@ class ReportGui:
     self.WIGI_OLD = ""
     # These are the sorted and cleaned CSV files 
     self.CLP_Filtered_Old = ""
+    self.EXC_Filtered_Old = ""
     self.office = ""
     self.offices = ['ABC', 'DEF', 'GHI']
     self.office_var = StringVar()
@@ -115,7 +116,8 @@ class ReportGui:
   
   def build_new_report(self):
     self.filter_clps_by_office()
-  
+    self.filter_EXC_by_office()
+
   def filter_clps_by_office(self):
     df = pd.read_csv(StringIO(self.CLP_OLD))
     df.columns = df.columns.str.strip().str.upper()
@@ -127,16 +129,26 @@ class ReportGui:
     # print(self.CLP_Filtered_Old.splitlines()[:5])
   
   def filter_EXC_by_office(self):
-
-    #Below this line - old code
-    exc_path = os.path.join(self.csv_folder, "EXC.csv")
-    df = pd.read_csv(exc_path, dtype=str)
+    df = pd.read_csv(StringIO(self.EXC_OLD))
+    df.columns = df.columns.str.strip().str.upper()
     org_field = "ORG_CODE"
     sort_field = "APPNT EFF DATE"
-    df_filtered = df[df[org_field].isin(self.office_codes[self.selected_office])]
+    df_filtered = df[df[org_field].isin(self.office_code_map[self.office])]
+    df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
+    self.EXC_Filtered_Old = self.df_to_csv_string(df_filtered)
+    print(self.EXC_Filtered_Old.splitlines()[:5])
+  
+  def filter_WIGI_by_office(self):
+    office = self.selected_office
+    wigi_path = os.path.join(self.csv_folder, "WIGI.csv")
+    df = pd.read_csv(wigi_path, dtype=str)
+    org_field = "Organization Cd"
+    sort_field = "WGI DATE"
+    stripped_office_code = self.office_codes[office] = [value[2:] for value in self.office_codes[office]]
+    df_filtered = df[df[org_field].isin(stripped_office_code)]
     df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
     office = self.selected_office
-    csv_path = os.path.join(self.csv_folder, f"{office}_EXC.csv")
+    csv_path = os.path.join(self.csv_folder, f"{office}_WIGI.csv")
     df_filtered.to_csv(csv_path, index=False)
 
   
@@ -146,7 +158,6 @@ class ReportGui:
   # The methods below here are support methods...maybe one day move to another class...
   # This method is for the JSON file. 
   def load_office_codes(self):
-    print(os.getcwd())
     config_path = os.path.join(os.getcwd(), "./office_codes/offices_and_codes.json")
     try:
         with open(config_path, "r", encoding="utf-8") as f:
