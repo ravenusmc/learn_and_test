@@ -215,3 +215,13 @@ report_object.build_new_clp_report()
 report_object.build_new_EXC_report()
 report_object.build_final_report()
 report_object.delete_all_csv_files()
+
+
+
+    self.CLP_OLD = ""
+    self.EXC_OLD = ""
+    self.WIGI_OLD = ""
+    # These are the sorted and cleaned CSV files 
+    self.CLP_Filtered_Old = ""
+    self.EXC_Filtered_Old = ""
+    self.WIGI_Filtered_Old = ""

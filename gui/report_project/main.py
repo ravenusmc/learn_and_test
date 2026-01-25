@@ -24,16 +24,24 @@ class ReportGui:
     self.office_code_map = self.load_office_codes()
     #Reports Parameters 
     self.monthly_report = ""
+    self.old_monthly_report = ""
     self.CLP_DF = ""
     self.EXC_DF = ""
     self.WIGI_DF = ""
+    self.CLP_DF_OLD = ""
+    self.EXC_DF_OLD = ""
+    self.WIGI_DF_OLD = ""
     # These are the CSV files 
+    self.CLP_NEW = ""
+    self.EXC_NEW = ""
+    self.WIGI_NEW = ""
     self.CLP_OLD = ""
     self.EXC_OLD = ""
     self.WIGI_OLD = ""
     # These are the sorted and cleaned CSV files 
-    self.CLP_Filtered_Old = ""
-    self.EXC_Filtered_Old = ""
+    self.CLP_Filtered_New = ""
+    self.EXC_Filtered_New = ""
+    self.WIGI_Filtered_New = ""
     self.office = ""
     self.offices = ['ABC', 'DEF', 'GHI']
     self.office_var = StringVar()
@@ -71,7 +79,7 @@ class ReportGui:
     # Buttons 
     self.btn = Button(master, text='Select New Report', command=self.get_new_monthly_report)
     self.btn.pack()
-    self.btn = Button(master, text='Select Old Monthly Report', command=self.get_new_monthly_report)
+    self.btn = Button(master, text='Select Old Monthly Report', command=self.get_old_month_report)
     self.btn.pack()
     self.btn = Button(master, text='Execute Program', command=self.build_new_report)
     self.btn.pack()
@@ -85,7 +93,6 @@ class ReportGui:
     if not self.month:
       messagebox.showerror("Missing Month", "Please enter a month")
       return
-    # print("Office entered:", self.office) 
     file_path = filedialog.askopenfilename(
         title="Select Monthly Report",
         filetypes=[("Excel files", "*.xlsx *.xls")]
@@ -108,52 +115,122 @@ class ReportGui:
           csv_text = self.df_to_csv_string(df)
           self.csv_buffers[sheet_name] = csv_text
           if sheet_name == "CLP":
-              self.CLP_OLD = csv_text
+              self.CLP_NEW = csv_text
           elif sheet_name == "EXC":
-              self.EXC_OLD = csv_text
+              self.EXC_NEW = csv_text
           elif sheet_name == "WIGI":
-              self.WIGI_OLD = csv_text
+              self.WIGI_NEW = csv_text
+
+  def get_old_month_report(self):
+    file_path = filedialog.askopenfilename(
+        title="Select Monthly Report",
+        filetypes=[("Excel files", "*.xlsx *.xls")]
+    )
+    if not file_path:
+        return  # user cancelled
+    self.old_monthly_report = pd.read_excel(
+        file_path,
+        sheet_name=None,
+        engine='openpyxl'
+    )
+    self.CLP_DF_OLD = self.old_monthly_report["CLP"]
+    self.EXC_DF_OLD = self.old_monthly_report["EXC"]
+    self.WIGI_DF_OLD = self.old_monthly_report["WIGI"]
+    self.export_all_sheets_to_csv_old_report()
+  
+  def export_all_sheets_to_csv_old_report(self):
+    self.csv_buffers = {}
+    for sheet_name, df in self.old_monthly_report.items():
+        csv_text = self.df_to_csv_string(df)
+        self.csv_buffers[sheet_name] = csv_text
+        if sheet_name == "CLP":
+            self.CLP_OLD = csv_text
+        elif sheet_name == "EXC":
+            self.EXC_OLD = csv_text
+        elif sheet_name == "WIGI":
+            self.WIGI_OLD = csv_text
   
   def build_new_report(self):
+    self.office = self.office_var.get().strip()
+    self.month = self.month_var.get().strip()
+    if not self.office:
+      messagebox.showerror("Missing Office", "Please enter an office name.")
+      return
+    if not self.month:
+      messagebox.showerror("Missing Month", "Please enter a month")
+      return
+    if not self.monthly_report:
+      messagebox.showerror("Missing New Month Report: Please Seletct")
+      return
+    if not self.old_monthly_report: 
+       messagebox.showerror("Missing New Month Report: Please Seletct")
+       return
     self.filter_clps_by_office()
     self.filter_EXC_by_office()
+    self.filter_WIGI_by_office()
+    self.build_new_clp_report()
 
   def filter_clps_by_office(self):
-    df = pd.read_csv(StringIO(self.CLP_OLD))
+    df = pd.read_csv(StringIO(self.CLP_NEW))
     df.columns = df.columns.str.strip().str.upper()
     org_field = "ORG CODE"
     sort_field = "ENTER PRES GR"
     df_filtered = df[df[org_field].isin(self.office_code_map[self.office])]
     df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
-    self.CLP_Filtered_Old = self.df_to_csv_string(df_filtered)
+    self.CLP_Filtered_New = self.df_to_csv_string(df_filtered)
     # print(self.CLP_Filtered_Old.splitlines()[:5])
   
   def filter_EXC_by_office(self):
-    df = pd.read_csv(StringIO(self.EXC_OLD))
+    df = pd.read_csv(StringIO(self.EXC_NEW))
     df.columns = df.columns.str.strip().str.upper()
     org_field = "ORG_CODE"
     sort_field = "APPNT EFF DATE"
     df_filtered = df[df[org_field].isin(self.office_code_map[self.office])]
     df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
-    self.EXC_Filtered_Old = self.df_to_csv_string(df_filtered)
-    print(self.EXC_Filtered_Old.splitlines()[:5])
-  
+    self.EXC_Filtered_New = self.df_to_csv_string(df_filtered)
+    
   def filter_WIGI_by_office(self):
-    office = self.selected_office
-    wigi_path = os.path.join(self.csv_folder, "WIGI.csv")
-    df = pd.read_csv(wigi_path, dtype=str)
-    org_field = "Organization Cd"
+    df = pd.read_csv(StringIO(self.WIGI_NEW))
+    # Normalize columns
+    df.columns = df.columns.str.strip().str.upper()
+    org_field = "ORGANIZATION CD"
     sort_field = "WGI DATE"
-    stripped_office_code = self.office_codes[office] = [value[2:] for value in self.office_codes[office]]
-    df_filtered = df[df[org_field].isin(stripped_office_code)]
+    office_codes = self.office_code_map[self.office]
+    stripped_office_codes = [value[2:] for value in office_codes]
+    df[org_field] = df[org_field].astype(str).str.strip()
+    df_filtered = df[df[org_field].isin(stripped_office_codes)]
     df_filtered = df_filtered.sort_values(by=sort_field, ascending=True)
-    office = self.selected_office
-    csv_path = os.path.join(self.csv_folder, f"{office}_WIGI.csv")
-    df_filtered.to_csv(csv_path, index=False)
-
+    self.WIGI_Filtered_New = self.df_to_csv_string(df_filtered)
+    # print(self.WIGI_Filtered_Old.splitlines()[:5])
   
-  def break_up_new_monthly_report(self):
-    pass
+  def build_new_clp_report(self):
+    df_old = pd.read_csv(StringIO(self.CLP_OLD))
+    df_new = pd.read_csv(StringIO(self.CLP_Filtered_New))
+    # Keep only the columns we need from the old file
+    df_old_reduced = df_old[["EMPLOYEE NAME", "Notes"]]
+
+    # OLD CODE: 
+    # office = self.selected_office
+    # # Load both CSVs
+    # old_clp_path = os.path.join(self.csv_folder, f"{office}_old_CLP.csv")
+    # new_clp_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
+    # df_old = pd.read_csv(old_clp_path, dtype=str)
+    # df_new = pd.read_csv(new_clp_path, dtype=str)
+    # # Keep only the columns we need from the old file
+    # df_old_reduced = df_old[["EMPLOYEE NAME", "Notes"]]
+    # # Merge on the name column(s)
+    # # Merge NOTES into the new CLP file
+    # df_merged = df_new.merge(
+    #     df_old_reduced,
+    #     on="EMPLOYEE NAME",
+    #     how="left"
+    # )
+    # cols = ["Notes"] + [c for c in df_merged.columns if c != "Notes"]
+    # df_merged = df_merged[cols]
+    # # Save result
+    # csv_path = os.path.join(self.csv_folder, f"{office}_MERGED_CLP.csv")
+    # df_merged.to_csv(csv_path, index=False)
+
 
   # The methods below here are support methods...maybe one day move to another class...
   # This method is for the JSON file. 
