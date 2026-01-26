@@ -208,23 +208,18 @@ class ReportGui:
     df_new = pd.read_csv(StringIO(self.CLP_Filtered_New))
     # Keep only the columns we need from the old file
     df_old_reduced = df_old[["EMPLOYEE NAME", "Notes"]]
+    # Merge on the name column(s)
+    df_merged = df_new.merge(
+        df_old_reduced,
+        on="EMPLOYEE NAME",
+        how="left"
+    )
+    cols = ["Notes"] + [c for c in df_merged.columns if c != "Notes"]
+    df_merged = df_merged[cols]
+    print(df_merged)
+
 
     # OLD CODE: 
-    # office = self.selected_office
-    # # Load both CSVs
-    # old_clp_path = os.path.join(self.csv_folder, f"{office}_old_CLP.csv")
-    # new_clp_path = os.path.join(self.csv_folder, f"{office}_CLP.csv")
-    # df_old = pd.read_csv(old_clp_path, dtype=str)
-    # df_new = pd.read_csv(new_clp_path, dtype=str)
-    # # Keep only the columns we need from the old file
-    # df_old_reduced = df_old[["EMPLOYEE NAME", "Notes"]]
-    # # Merge on the name column(s)
-    # # Merge NOTES into the new CLP file
-    # df_merged = df_new.merge(
-    #     df_old_reduced,
-    #     on="EMPLOYEE NAME",
-    #     how="left"
-    # )
     # cols = ["Notes"] + [c for c in df_merged.columns if c != "Notes"]
     # df_merged = df_merged[cols]
     # # Save result
