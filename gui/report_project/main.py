@@ -223,16 +223,11 @@ class ReportGui:
     self.clp_with_notes_final = self.df_to_csv_string(df_merged)
   
   def build_new_EXC_report(self):
-    office = self.selected_office
-    # Load both CSVs
-    old_EXC_path = os.path.join(self.csv_folder, f"{office}_old_EXC.csv")
-    new_EXC_path = os.path.join(self.csv_folder, f"{office}_EXC.csv")
-    df_old = pd.read_csv(old_EXC_path, dtype=str)
-    df_new = pd.read_csv(new_EXC_path, dtype=str)
+    df_old = pd.read_csv(StringIO(self.EXC_OLD))
+    df_new = pd.read_csv(StringIO(self.EXC_Filtered_New))
     # Keep only the columns we need from the old file
     df_old_reduced = df_old[["Employee Name", "Notes"]]
     # Merge on the name column(s)
-    # Merge NOTES into the new CLP file
     df_merged = df_new.merge(
         df_old_reduced,
         on="Employee Name",
@@ -242,9 +237,7 @@ class ReportGui:
     df_merged = df_merged[cols]
     # Save result
     csv_path = os.path.join(self.csv_folder, f"{office}_MERGED_EXC.csv")
-    df_merged.to_csv(csv_path, index=False)
-
-
+    self.exc_with_notes_final = self.df_to_csv_string(df_merged)
 
 
   # The methods below here are support methods...maybe one day move to another class...
