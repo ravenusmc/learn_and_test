@@ -45,7 +45,6 @@ class ReportGui:
     # These are the filtered CSV files with notes added
     self.clp_with_notes_final = ""
     self.exc_with_notes_final = ""
-    self.wigi_with_notes_final = ""
     self.office = ""
     self.offices = ['ABC', 'DEF', 'GHI']
     self.office_var = StringVar()
@@ -164,15 +163,17 @@ class ReportGui:
       messagebox.showerror("Missing Month", "Please enter a month")
       return
     if not self.monthly_report:
-      messagebox.showerror("Missing New Month Report: Please Seletct")
+      messagebox.showerror("Missing New Month Report: Please Select")
       return
     if not self.old_monthly_report: 
-       messagebox.showerror("Missing New Month Report: Please Seletct")
+       messagebox.showerror("Missing New Month Report: Please Select")
        return
     self.filter_clps_by_office()
     self.filter_EXC_by_office()
     self.filter_WIGI_by_office()
     self.build_new_clp_report()
+    self.build_new_EXC_report()
+    self.build_final_report()
 
   def filter_clps_by_office(self):
     df = pd.read_csv(StringIO(self.CLP_NEW))
@@ -210,34 +211,80 @@ class ReportGui:
   def build_new_clp_report(self):
     df_old = pd.read_csv(StringIO(self.CLP_OLD))
     df_new = pd.read_csv(StringIO(self.CLP_Filtered_New))
+    # Normalize headers
+    df_old = self.normalize_columns(df_old)
+    df_new = self.normalize_columns(df_new)
     # Keep only the columns we need from the old file
-    df_old_reduced = df_old[["EMPLOYEE NAME", "Notes"]]
+    df_old_reduced = df_old[["EMPLOYEE_NAME", "NOTES"]]
     # Merge on the name column(s)
     df_merged = df_new.merge(
         df_old_reduced,
-        on="EMPLOYEE NAME",
+        on="EMPLOYEE_NAME",
         how="left"
     )
-    cols = ["Notes"] + [c for c in df_merged.columns if c != "Notes"]
+    cols = ["NOTES"] + [c for c in df_merged.columns if c != "NOTES"]
     df_merged = df_merged[cols]
     self.clp_with_notes_final = self.df_to_csv_string(df_merged)
   
   def build_new_EXC_report(self):
     df_old = pd.read_csv(StringIO(self.EXC_OLD))
     df_new = pd.read_csv(StringIO(self.EXC_Filtered_New))
+    # Normalize headers
+    df_old = self.normalize_columns(df_old)
+    df_new = self.normalize_columns(df_new)
+    # print("OLD columns:", df_old.columns.tolist())
+    # print("NEW columns:", df_new.columns.tolist())
+    # input()
     # Keep only the columns we need from the old file
-    df_old_reduced = df_old[["Employee Name", "Notes"]]
+    df_old_reduced = df_old[["EMPLOYEE_NAME", "NOTES"]]
     # Merge on the name column(s)
     df_merged = df_new.merge(
         df_old_reduced,
-        on="Employee Name",
+        on="EMPLOYEE_NAME",
         how="left"
     )
-    cols = ["Notes"] + [c for c in df_merged.columns if c != "Notes"]
+    cols = ["NOTES"] + [c for c in df_merged.columns if c != "NOTES"]
     df_merged = df_merged[cols]
     # Save result
-    csv_path = os.path.join(self.csv_folder, f"{office}_MERGED_EXC.csv")
     self.exc_with_notes_final = self.df_to_csv_string(df_merged)
+  
+  def build_final_report(self):
+    # Read CSVs
+    df_clp = pd.read_csv(StringIO(self.clp_with_notes_final))
+    df_exc = pd.read_csv(StringIO(self.exc_with_notes_final))
+    df_wigi = pd.read_csv(StringIO(self.WIGI_Filtered_New))
+    office = self.office
+    month = self.month
+    # Default filename suggestion
+    default_name = f"{office}_{month}_Monthly_report.xlsx"
+    # Ask user where to save
+    output_excel = filedialog.asksaveasfilename(
+        title="Save Monthly Report",
+        defaultextension=".xlsx",
+        initialfile=default_name,
+        filetypes=[("Excel Files", "*.xlsx")]
+    )
+    print('HERE')
+    input()
+    # User clicked Cancel
+    if not output_excel:
+        return
+    # Write all three sheets into one Excel file
+    try:
+        with pd.ExcelWriter(output_excel, engine="openpyxl") as writer:
+            df_clp.to_excel(writer, sheet_name="CLP", index=False)
+            df_exc.to_excel(writer, sheet_name="EXC", index=False)
+            df_wigi.to_excel(writer, sheet_name="WIGI", index=False)
+
+        messagebox.showinfo(
+            "Success",
+            f"Report saved successfully:\n{output_excel}"
+        )
+    except Exception as e:
+        messagebox.showerror(
+            "Save Failed",
+            f"Could not save report:\n{e}"
+        )
 
 
   # The methods below here are support methods...maybe one day move to another class...
@@ -259,6 +306,16 @@ class ReportGui:
     buffer = StringIO()
     df.to_csv(buffer, index=False)
     return buffer.getvalue()
+  
+  # This method will make all the column names the same. 
+  def normalize_columns(self, df):
+    df.columns = (
+        df.columns
+        .str.strip()
+        .str.upper()
+        .str.replace(" ", "_")
+    )
+    return df
 
 
 
