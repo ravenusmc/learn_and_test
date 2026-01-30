@@ -66,7 +66,6 @@ class ReportGui:
     )
     self.office_menu.config(bg=self.master.color)
     self.office_menu.pack(side=LEFT)
-
     # Entry Month Code: 
     row_2 = Frame(master, bg=self.master.color)
     row_2.pack(pady=10)
@@ -78,7 +77,6 @@ class ReportGui:
     )
     self.month_menu.config(bg=self.master.color)
     self.month_menu.pack(side=LEFT)
-
     # Buttons 
     self.btn = Button(master, text='Select New Report', command=self.get_new_monthly_report)
     self.btn.pack()
