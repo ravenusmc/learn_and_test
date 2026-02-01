@@ -7,7 +7,7 @@ from io import StringIO
 import pandas as pd
 import os
 import json
-import glob
+# import glob
 from tkinter import messagebox
 
 
@@ -20,50 +20,39 @@ class ReportGui:
     self.master.title("Report Maker")
     self.master.geometry("420x320")
     self.master.configure(bg="gray55")
-
     # ---------------- Data Setup ----------------
     self.office_code_map = self.load_office_codes()
-
     self.monthly_report = ""
     self.old_monthly_report = ""
-
     self.CLP_DF = ""
     self.EXC_DF = ""
     self.WIGI_DF = ""
-
     self.CLP_DF_OLD = ""
     self.EXC_DF_OLD = ""
     self.WIGI_DF_OLD = ""
-
     self.CLP_NEW = ""
     self.EXC_NEW = ""
     self.WIGI_NEW = ""
-
     self.CLP_OLD = ""
     self.EXC_OLD = ""
     self.WIGI_OLD = ""
-
     self.CLP_Filtered_New = ""
     self.EXC_Filtered_New = ""
     self.WIGI_Filtered_New = ""
-
     self.clp_with_notes_final = ""
     self.exc_with_notes_final = ""
-
     # ---------------- Variables ----------------
     self.offices = ["ABC", "DEF", "GHI"]
     self.months = [
         "Jan","Feb","Mar","Apr","May","Jun",
         "Jul","Aug","Sep","Oct","Nov","Dec"
     ]
-
     self.office_var = StringVar(value=self.offices[0])
     self.month_var = StringVar(value=self.months[0])
 
     # ---------------- Main Container ----------------
     main_frame = Frame(master, bg="gray55", padx=20, pady=20)
     main_frame.pack(fill="both", expand=True)
-
     # ---------------- Title ----------------
     title = Label(
         main_frame,
@@ -72,13 +61,9 @@ class ReportGui:
         bg="gray55"
     )
     title.pack(pady=(0, 15))
-
-
-    # ---------------- Form Frame ----------------
+    # --------------- Form Frame ----------------
     form_frame = Frame(main_frame, bg="gray55")
     form_frame.pack(pady=10)
-
-
     # Office
     Label(
         form_frame,
@@ -95,8 +80,6 @@ class ReportGui:
     )
     self.office_menu.config(width=12)
     self.office_menu.grid(row=0, column=1, padx=5, pady=5)
-
-
     # Month
     Label(
         form_frame,
@@ -105,7 +88,6 @@ class ReportGui:
         anchor="e",
         width=10
     ).grid(row=1, column=0, padx=5, pady=5)
-
     self.month_menu = OptionMenu(
         form_frame,
         self.month_var,
@@ -113,13 +95,9 @@ class ReportGui:
     )
     self.month_menu.config(width=12)
     self.month_menu.grid(row=1, column=1, padx=5, pady=5)
-
-
     # ---------------- Buttons Frame ----------------
     button_frame = Frame(main_frame, bg="gray55")
     button_frame.pack(pady=20)
-
-
     self.btn_new = Button(
         button_frame,
         text="Select New Report",
@@ -127,8 +105,6 @@ class ReportGui:
         command=self.get_new_monthly_report
     )
     self.btn_new.pack(pady=4)
-
-
     self.btn_old = Button(
         button_frame,
         text="Select Old Report",
@@ -136,8 +112,6 @@ class ReportGui:
         command=self.get_old_month_report
     )
     self.btn_old.pack(pady=4)
-
-
     self.btn_run = Button(
         button_frame,
         text="Execute Program",
